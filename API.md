@@ -176,7 +176,13 @@ Retorna um documento JSON com a lista de ações que foram processadas. Esse doc
 ## Semente
 
 Endpoint: **`/seed`**
+
+#### POST /seed
 Recebe um  número  inteiro  em  um  documento  JSON  que deverá ser usado como semente do gerador de números pseudo aleatórios, que é usadoquando o processo for uma réplica durante a fase de votação.
 * **Código  de resposta de sucesso:**`200 OK`
+* **Corpo da requisição:**
+```json{
+  {"seed":12345}
+
 
 
