@@ -16,7 +16,7 @@ db = SQLAlchemy(app)
 
 trans = {}
 
-mode = 'server'
+mode = 'replica'
 
 class Replica(db.Model):
     __tablename__ = "Replica"
@@ -102,6 +102,7 @@ def replica():
         return jsonify({'replicas': replicas}), 201
     else:
         Replica.query.delete()
+        mode = "replica"
         db.session.commit()
         return '', 200
 
@@ -123,15 +124,18 @@ def transaction():
             for replica in replicas:
                 url = replica.endpoint + '/decision'
                 requests.put(url=url, json={'id': transaction.get('id')})
-            t1 = Transaction(id=transaction.get('id'), operation=transaction.get('operation'),
-                             value=transaction.get('value'), account_id=transaction.get('account'))
+                t1 = Transaction(id=transaction.get('id'), operation=transaction.get('operation'),
+                                 value=transaction.get('value'), account_id=transaction.get('account'))
             a = Account.query.filter(Account.id == t1.account_id);
             if t1.operation == "withdrawal":
                 a.balance -= t1.value
             elif t1.operation == "deposit":
                 a.balance += t1.value
             db.session.add(t1)
-            db.session.commit()
+            try:
+                db.session.commit()
+            except:
+                pass
             return '', 201
         else:
             for replica in replicas:
@@ -169,27 +173,32 @@ def action():
 
 @app.route('/decision', methods=['PUT', 'DELETE'])
 def decision():
+    if mode == "coordinator":
+        return '', 400
     if request.method == 'PUT':
         if not request.json:
             abort(400)
 
+        transaction = None
         if (request.json.get('id') in trans):
+            transaction = trans.get(request.json.get('id'))
             trans.pop(request.json.get('id'))
-        print('Gravando ', request.json.get('id'))  # para debug
+        else:
+            return '', 200
 
-        transaction = trans.get(request.json.get('id'))
+
         t1 = Transaction(id=transaction.get('id'), operation=transaction.get('operation'),
                          value=transaction.get('value'), account_id=transaction.get('account'))
         db.session.add(t1)
-        db.session.commit()
-
+        try:
+            db.session.commit()
+        except:
+            pass
         return '', 200
 
     if request.method == 'DELETE':
         if not request.json or 'id' not in request.json:
             abort(404)
-
-        print('DELETANDO ', request.json.get('id'))  # para debug
 
         return '', 200
 
