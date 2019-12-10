@@ -15,7 +15,7 @@ Retorna um documento JSON com as contas e seus respectivos saldos.
 
 * **Corpo da resposta:**
 
-  ```json{
+  ```json
   "accounts": [
     {
       "balance": 500,
@@ -34,7 +34,6 @@ Retorna um documento JSON com as contas e seus respectivos saldos.
       "id": 4
     }
   ]
-}```
 
 Endpoint: **`/replicas`**
 
