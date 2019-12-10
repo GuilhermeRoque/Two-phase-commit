@@ -7,5 +7,5 @@ Para executar o código:
 Obs: É utilizado um banco de dados sqlite para persistência dos dados, 
 por isso para não haver conflito é necessário que coordenador e réplicas sejam máquinas diferentes.
 
-Obs:O serviço um socket TCP com ip localhost e porta 5500.
+Obs:O serviço utiliza um socket TCP com ip localhost e porta 5500.
 
