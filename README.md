@@ -6,3 +6,6 @@ Para executar o código:
 
 Obs:O serviço utiliza um socket TCP com ip localhost e porta 5500.
 
+# Funcionalidades Implementadas
+Todas
+
