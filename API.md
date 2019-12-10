@@ -47,16 +47,18 @@ Retorna um documento JSON com o endpoint de cada réplica, além de seu identifi
 * **Corpo da resposta:**
 
   ```json
-  "replicas": [
-    {
-      "endpoint": "http://192.168.0.15/pp02",
-      "id": "replica3"
-    },
-    {
-      "endpoint": "http://192.168.0.1/pp02",
-      "id": "replica4"
-    }
-  ]
+  {
+    "replicas": [
+      {
+        "endpoint": "http://localhost:5500",
+        "id": "replica3"
+      },
+      {
+        "endpoint": "http://localhost:5500",
+        "id": "replica4"
+      }
+    ]
+  }
 
 #### POST /replicas
 Recebe um documento JSON com o endpoint de cada réplica, além de seu identificador único.
@@ -65,16 +67,18 @@ Recebe um documento JSON com o endpoint de cada réplica, além de seu identific
 * **Corpo da requisição:**
 
   ```json
-  "replicas": [
-    {
-      "endpoint": "http://192.168.0.15/pp02",
-      "id": "replica3"
-    },
-    {
-      "endpoint": "http://192.168.0.1/pp02",
-      "id": "replica4"
-    }
-  ]
+  {
+    "replicas": [
+      {
+        "endpoint": "http://localhost:5500",
+        "id": "replica3"
+      },
+      {
+        "endpoint": "http://localhost:5500",
+        "id": "replica4"
+      }
+    ]
+  }
 
 
 * **Corpo da resposta:**
