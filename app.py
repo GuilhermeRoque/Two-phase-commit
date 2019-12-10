@@ -9,7 +9,7 @@ import random
 auth = HTTPBasicAuth()
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///dbserver.sqlite'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -89,7 +89,6 @@ def replica():
         replicas_list = []
         for replica in replicas:
             replicas_list.append(replica.to_json())
-        print(replicas_list)
         return jsonify({'replicas': replicas_list})
     elif request.method == 'POST':
         if not request.json:
@@ -103,6 +102,7 @@ def replica():
         return jsonify({'replicas': replicas}), 201
     else:
         Replica.query.delete()
+        db.session.commit()
         return '', 200
 
 
@@ -142,7 +142,6 @@ def transaction():
         t = Transaction.query.all()
         j = []
         for t1 in t:
-            print('BBB')
             j.append({'id': t1.id, 'status': 'success'})
 
         for t1 in trans:
@@ -177,12 +176,12 @@ def decision():
         if (request.json.get('id') in trans):
             trans.pop(request.json.get('id'))
         print('Gravando ', request.json.get('id'))  # para debug
-        # TODO retirar comentarios antes de enviar
-        # transaction = trans.get(request.json.get('id'))
-        # t1 = Transaction(id=transaction.get('id'), operation=transaction.get('operation'),
-        #                  value=transaction.get('value'), account_id=transaction.get('account'))
-        # db.session.add(t1)
-        # db.session.commit()
+
+        transaction = trans.get(request.json.get('id'))
+        t1 = Transaction(id=transaction.get('id'), operation=transaction.get('operation'),
+                         value=transaction.get('value'), account_id=transaction.get('account'))
+        db.session.add(t1)
+        db.session.commit()
 
         return '', 200
 
@@ -191,12 +190,6 @@ def decision():
             abort(404)
 
         print('DELETANDO ', request.json.get('id'))  # para debug
-        # TODO retirar comentarios antes de enviar
-        # transaction = trans.get(request.json.get('id'))
-        # t1 = Transaction(id=transaction.get('id'), operation=transaction.get('operation'),
-        #                  value=transaction.get('value'), account_id=transaction.get('account'))
-        # db.session.add(t1)
-        # db.session.commit()
 
         return '', 200
 
@@ -206,7 +199,6 @@ def decision():
 @app.route('/seed', methods=['POST'])
 def seed():
     if not request.json or not 'seed' in request.json:
-        print(request.json)
         abort(400)
     seed = request.json.get('seed')
     random.seed(seed)
